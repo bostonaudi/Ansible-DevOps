@@ -1,0 +1,33 @@
+---
+- hosts: sc1platsql2k8.pdnt.blackbaud.com
+  vars:
+      srcInstallpath: "\\\\ptlserver9.pdnt.blackbaud.com\\3rdPartySoftware\\MS SQL Server 2008\\SQL Server 2008 R2 - RTM\\Developer"
+      SQLMediaPath: "c:\\sqlinstall"
+      sqlConfigFile: "\\\\ptlserver9.pdnt.blackbaud.com\\CrmPowershell\\FILES\\sqlconfigurationSQLSrv2008_automation_install.ini"
+
+  tasks:
+    - name: Copy sql2008 install files to local
+      win_copyfiles:
+          srcFolder: "{{ srcInstallpath }}"
+          destFolder: "{{ SQLMediaPath }}"
+      register: copyoutput
+    - debug: var=copyoutput
+
+    - name: Copy sql2008 config file to local
+      win_copyfiles:
+          srcFolder: "{{ sqlConfigFile }}"
+          destFolder: "{{ SQLMediaPath }}"
+      register: copyoutput2
+    - debug: var=copyoutput2
+
+    - name: Run SQL Server 2008 install
+      script: ../../scripts/runsqlinstaller.ps1 -configFile "{{ SQLMediaPath }}\\sqlconfigurationSQLSrv2008_automation_install.ini" -srcPath "{{ SQLMediaPath }}"
+      register: sqlinstall
+    - debug: var=sqlinstall
+      notify:
+          - Machine reboot
+
+
+  handlers:
+    - name: Machine reboot
+      raw: shutdown -r -t 5

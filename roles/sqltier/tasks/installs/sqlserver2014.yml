@@ -1,0 +1,26 @@
+---
+- hosts: sc1platsql2k8.pdnt.blackbaud.com
+  vars:
+      installpath: "\\\\ptlserver9\\3rdPartySoftware\\MS SQL Server 2014\\en_sql_server_2014_developer_edition_x64_dvd_3940406"
+      destFolder: "c:\\sqlinstall"
+      configFile: "\\\\ptlserver9.pdnt.blackbaud.com\\CrmPowershell\\FILES\\sqlconfigurationSQLSrv2014_install.ini"
+
+  tasks:
+    - name: Copy sql2014 config file to local
+      win_copyfiles:
+          srcFolder: "{{ configFile }}"
+          destFolder: "{{ destFolder }}"
+      register: copyoutput
+    - debug: var=copyoutput
+
+    - name: Run SQL Server 2014 install
+      script: ../../scripts/runsqlinstaller.ps1 -configFile "{{ destFolder }}\\sqlconfigurationSQLSrv2014_install.ini" -srcPath "{{ destFolder }}"
+      register: sqlinstall
+    - debug: var=sqlinstall
+      notify:
+          - Machine reboot
+
+
+  handlers:
+    - name: Machine reboot
+      raw: shutdown -r -t 5

@@ -1,0 +1,14 @@
+---
+
+ - name: test script module
+   hosts: testrig2
+   vars:
+       path: \\\\tfs-bldfs\\builds\\dev\\crm_integration\\5.0.107.0
+
+   tasks:
+    - name: test a script with args
+      script: helloworld.ps1 -path {{ path }}
+      register: copyoutput
+    - debug: var=copyoutput
+    - debug: var=ansible_hostname
+

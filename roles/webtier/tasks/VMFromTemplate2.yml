@@ -1,0 +1,33 @@
+---
+- hosts: 127.0.0.1
+  gather_facts: false
+  connection: local
+  user: local
+  sudo: true
+  vars: 
+      RigName: SC1Ans
+      VSphereServer: sc10pvcenters01.blackbaud.global
+      VSphereUser: johnha@blackbaud.com
+      VSpherePwd: Skylarbliss23 
+      AgtTemplate: AutomationTemplate-GUI2012
+      VMCluster: "Automation Lab" 
+      ResourcePool: "/Resources"
+      VMfolder: "Testboxes"
+      AutoLogonUser:
+          Autologon: yes
+          AutologonUser: pdnt\\automagic
+          AutologonPwd: Research6
+      AgentList: 
+        - SC1AnsAgt01
+        - SC1AnsAgt02
+  
+  tasks:
+    - name: provision VM agent
+      vsphere_guest: guest="{{ item }}" vcenter_hostname="{{ VSphereServer }}" 
+        username="{{ VSphereUser }}" password="{{ VSpherePwd }}" from_template=yes 
+        template_src="{{ AgtTemplate }}" cluster="{{ VMCluster }}" 
+        resource_pool="{{ ResourcePool }}" vm_folder="{{ VMfolder }}" 
+        autologon="{{AutoLogonUser}}"
+      with_items:
+        - SC1AnsAgt01
+        - SC1AnsAgt02

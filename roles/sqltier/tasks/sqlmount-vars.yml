@@ -1,0 +1,14 @@
+---
+- hosts: windows
+  remote_user: automagic
+  vars:
+    sqlhost: " {{ sqlServer }}"
+    bakfilePath: "{{ bakFilePath }}"
+
+  tasks:
+    - name: Restore db
+      win_mountdb:
+         sqlinstance: "{{ sqlhost }}"
+         databasepath: "{{ bakfilePath }}"
+      register: mount_output
+    - debug: var=mount_output

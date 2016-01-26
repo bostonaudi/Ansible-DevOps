@@ -1,0 +1,13 @@
+---
+- hosts: windows
+  vars:
+      BuildPath: "\\\\tfs-bldfs\\builds\\DEV\\CRM_Integration\\5.0.96.0\\Installer\\Blackbaudinstaller.exe"
+      DestFolder: "c:\\crmbuild"
+  tasks:
+    - name: Copy files
+      win_copyfiles:
+          srcFolder: "{{ BuildPath }}"
+          destFolder: "{{ DestFolder }}"
+      register: copyoutput
+    - debug: var=copyoutput
+

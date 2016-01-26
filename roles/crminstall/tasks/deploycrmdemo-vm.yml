@@ -1,0 +1,25 @@
+---
+- hosts: sc1t2tstweb001a.pdnt.blackbaud.com
+  vars:
+    webservers: sc1t2tstweb001a
+    BuildPath: "{{ buildpath }}"
+    bakfilePath: "{{ bakpath }}"
+    reportServer: "sc1t2tstweb001a"
+  tasks:
+  - name: SQL Install
+    script: ../scripts/deploybuildsql.ps1 -buildDropLocation "{{ BuildPath }}" -databases "{{ webservers }}" -databasePath "{{ bakfilePath }}" -ReportInstance "{{ reportServer }}"
+    register: sql_result
+    failed_when: "sql_result.stderr != ''"
+  - debug: var=sql_result.stderr
+
+- hosts: sc1t2tstweb001a.pdnt.blackbaud.com
+  vars:
+    sqlhost: sc1t2tstweb001a
+    BuildPath: "{{ buildpath }}"
+    bakfilePath: "{{ bakpath }}"
+  tasks:
+  - name: Web Install
+    script: ../scripts/deploycrmagent.ps1 -buildDropLocation "{{ BuildPath }}" -SQLInstance "{{ sqlhost }}" -databasePath "{{ bakfilePath }}"
+    register: iis_result
+    failed_when: "iis_result.stderr != ''"
+  - debug: var=iis_result.stderr

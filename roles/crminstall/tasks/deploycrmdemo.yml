@@ -1,0 +1,25 @@
+---
+- hosts: sc1demosqlrpt.pdnt.blackbaud.com
+  vars:
+    webservers: sc1EntDemo
+    BuildPath: "{{ buildpath }}"
+    bakfilePath: "{{ bakpath }}"
+  tasks:
+  - name: SQL Install
+    script: ../scripts/deploybuildcrmsql.ps1 -buildDropLocation "{{ BuildPath }}" -agents "{{ webservers }}" -databasePath "{{ bakfilePath }}"
+    register: sql_result
+    failed_when: "'Error' in sql_result.stderr"
+  - debug: var=sql_result.stderr
+
+- hosts: sc1entdemo.pdnt.blackbaud.com
+  vars:
+    sqlhost: sc1demosqlrpt
+    BuildPath: "{{ buildpath }}"
+    bakfilePath: "{{ bakpath }}"
+    reportServer: "sc1demosqlrpt"
+  tasks:
+  - name: Web Install
+    script: ../scripts/deploycrmagent.ps1 -buildDropLocation "{{ BuildPath }}" -SQLInstance "{{ sqlhost }}" -ReportInstance "{{ reportServer }}"
+    register: iis_result
+    failed_when: "'Error' in iis_result.stderr"
+  - debug: var=iis_result.stderr

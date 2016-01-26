@@ -1,0 +1,8 @@
+---
+- hosts: testctlrs
+
+  tasks:
+    - name: Clean test controllers
+      win_cleanctlrs:
+      register: cleanoutput
+    - debug: var=cleanoutput

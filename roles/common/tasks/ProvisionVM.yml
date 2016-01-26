@@ -1,0 +1,66 @@
+---
+- hosts: 127.0.0.1
+  gather_facts: false
+  connection: local
+
+  vars_prompt:
+    - name: "vsphere_user"
+      prompt: "Enter vSphere username (user@blackbaud)"
+      private: no
+    - name: "vsphere_password"
+      prompt: "Enter vSphere password"
+      private: yes
+
+  vars:
+      VSphereServer: sc10pvcsas01.blackbaud.global
+      VMCluster: "Automation Lab"
+      ResourcePool: "/Resources"
+      VMfolder: "Testboxes"
+
+  tasks:
+    - name: provision new VM
+      vsphere_guest:
+        vcenter_hostname: "{{ VSphereServer }}"
+        username: "{{ vsphere_user }}"
+        password: "{{ vsphere_password }}"
+        guest: SC1NewSQL03
+        state: powered_on
+        vm_hw_version: vmx-08
+        vm_extra_config:
+           vcpu.hotadd: yes
+           mem.hotadd:  yes
+           notes: This is a test VM
+           folder: "{{ VMfolder }}"
+        vm_disk:
+          disk1:
+            size_gb: 50
+            type: thin
+            datastore: SC1_VNX5600_TFSAUTO_03
+          disk2:
+            size_gb: 100
+            type: thin
+            datastore: SC1_VNX5600_TFSAUTO_03
+          disk3:
+            size_gb: 20
+            type: thin
+            datastore: SC1_VNX5600_TFSAUTO_03
+          disk4:
+            size_gb: 20
+            type: thin
+            datastore: SC1_VNX5600_TFSAUTO_03
+        vm_nic:
+          nic1:
+            type: e1000e
+            network: "SERVER_VLAN_122"
+            network_type: dvs
+        vm_hardware:
+          memory_mb: 4096
+          num_cpus: 1
+          osid: windows8Server64Guest
+          scsi: lsi_sas
+          vm_cdrom:
+            type: "iso"
+            iso_path: "ISO_TFS_AUTO_LAB/Lab ISOs/OS/Windows2012ISO_Core.iso"
+        esxi:
+          datacenter: "Enterprise Test Lab"
+          hostname: sc10pucss07.blackbaud.global

@@ -1,0 +1,24 @@
+---
+- hosts: sc1ent6sqlsrv.pdnt.blackbaud.com
+  vars:
+      patchfile: "SQLServer2012-KB3082561-x64.exe"
+
+  tasks:
+    - name: Copy sql2012 SP2 CU8 patch to local
+      win_copyfiles:
+          srcFolder: "\\\\ptlserver9.pdnt.blackbaud.com\\3rdPartySoftware\\MS SQL Server 2012\\SP2\\CU8\\{{ patchfile }}"
+          destFolder: "c:\\sqlpatch"
+      register: copyoutput
+    - debug: var=copyoutput
+
+    - name: Run SQL Server 2012 SP2 CU8 Patch
+      raw: "c:\\sqlpatch\\{{ patchfile }} /q /IAcceptSQLServerLicenseTerms /Action=Patch /InstanceName=MSSQLSERVER"
+      ignore_errors: True
+      register: sqlpatch
+    - debug: var=sqlpatch
+      notify:
+          - Machine reboot
+
+  handlers:
+    - name: Machine reboot
+      raw: shutdown -r -t 5

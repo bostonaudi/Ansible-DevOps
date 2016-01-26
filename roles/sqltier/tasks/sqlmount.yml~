@@ -1,0 +1,14 @@
+---
+- hosts: windows
+  remote_user: automagic
+  vars:
+    sqlhost: "sc1anssqlsrv.pdnt.blackbaud.com"
+    bakfilePath: "\\\\ptlservernas3\\DBrepository\\Infinity\\Firebird\\Enterprise\\SQLServerCompatBackups\\BBInfinity_4.0_SP2_Compat111.bak"
+
+  tasks:
+    - name: Restore db
+      win_mountdb:
+         sqlinstance: "{{ sqlhost }}" 
+         databasepath: "{{ bakfilePath }}"
+      register: mount_output
+    - debug: var=mount_output

@@ -1,0 +1,10 @@
+---
+- name: test script 
+  hosts: windows
+  tasks:
+    - name: run script
+      raw: ipconfig
+      register: ipconfig
+    - debug: var=ipconfig
+
+

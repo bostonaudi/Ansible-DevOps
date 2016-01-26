@@ -1,0 +1,24 @@
+---
+- hosts: EnterpriseSQLServers
+  vars:
+      patchfile: "SQLServer2014SP1-KB3058865-x64-ENU.exe"
+
+  tasks:
+    - name: Copy sql2014 sp1 patch to local
+      win_copyfiles:
+          srcFolder: "\\\\ptlserver9.pdnt.blackbaud.com\\3rdPartySoftware\\MS SQL Server 2014\\SP1\\{{ patchfile }}"
+          destFolder: "c:\\sqlpatch"
+      register: copyoutput
+    - debug: var=copyoutput
+
+    - name: Run SQL Server 2014 SP1 CU1 Patch
+      raw: "c:\\sqlpatch\\{{ patchfile }} /q /IAcceptSQLServerLicenseTerms /Action=Patch /InstanceName=MSSQLSERVER"
+      ignore_errors: True
+      register: sqlpatch
+    - debug: var=sqlpatch
+      notify:
+          - Machine reboot
+
+  handlers:
+    - name: Machine reboot
+      raw: shutdown -r -t 5

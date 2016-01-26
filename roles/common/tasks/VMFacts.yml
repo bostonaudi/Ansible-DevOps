@@ -1,0 +1,22 @@
+---
+- hosts: 127.0.0.1
+  gather_facts: false
+  connection: local
+  vars:
+      VSphereServer: sc10pvcsas01.blackbaud.global
+      VSphereUser: johnha@blackbaud
+      VSpherePwd: Skylarbliss26
+      VMCluster: "Automation Lab"
+      ResourcePool: "/Resources"
+      VMfolder: "Testboxes"
+
+  tasks:
+    - name: provision new VM
+      vsphere_guest:
+        vcenter_hostname: "{{ VSphereServer }}"
+        username: "{{ VSphereUser }}"
+        password: "{{ VSpherePwd }}"
+        guest: SC1AltruAgt01
+        vmware_guest_facts: yes
+      register: facts
+    - debug: var=facts

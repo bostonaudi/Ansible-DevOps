@@ -1,0 +1,22 @@
+---
+- hosts: windows
+  gather_facts: true
+  vars:
+    sqlInstance: ""
+    database: ""
+    bakFilePath: ""
+      
+  
+  tasks:
+    - name: Restore db
+      file: files/restoredb.ps1: 
+        sqlInstance: "{{ sqlInstance }}"
+        database: "{{ database }}"
+        bakFilePath: "{{ bakFilePath }}"
+   
+    - name: Add System User
+      
+
+    - name: Install CRM Build
+
+    

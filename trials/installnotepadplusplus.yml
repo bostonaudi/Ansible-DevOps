@@ -1,0 +1,12 @@
+# Install notepadplusplus version 6.6
+---
+- hosts: windows
+
+  tasks:
+    - name: install notepadplusplus
+      win_chocolatey:
+        name: notepadplusplus.commandline
+      register: Out
+    - debug: var=Out
+
+

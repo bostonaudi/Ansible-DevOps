@@ -1,0 +1,51 @@
+---
+- hosts: sc1t2tstweb001a.pdnt.blackbaud.com
+  vars:
+      BuildPath: "\\\\tfs-bldfs\\builds\\DEV\\CRM_Integration\\5.0.124.0\\Install"
+      DestFolder: "c:\\crmbuild"
+      sqlhost: "sc1t2tstweb001a.pdnt.blackbaud.com"
+      bakfilePath: "\\\\ptlservernas3\\DBrepository\\Infinity\\Firebird\\Enterprise\\SQLServerCompatBackups\\BBInfinity_4.0_SP2_Compat110.bak"
+
+  tasks:
+    - name: Copy vroot
+      win_copyfiles:
+          srcFolder: "{{ BuildPath }}\\vroot"
+          destFolder: "{{ DestFolder }}\\vroot"
+      register: copyvroot
+    - debug: var=copyvroot
+
+    - name: Copy msbuild
+      win_copyfiles:
+          srcFolder: "{{ BuildPath }}\\msbuild"
+          destFolder: "{{ DestFolder }}\\msbuild"
+      register: copymsbuild
+    - debug: var=copymsbuild
+
+    - name: Copy tools
+      win_copyfiles:
+          srcFolder: "{{ BuildPath }}\\tools"
+          destFolder: "{{ DestFolder }}\\tools"
+      register: copytools
+    - debug: var=copytools
+
+    - name: Restore db
+      win_mountdb:
+         sqlinstance: "{{ sqlhost }}"
+         databasepath: "{{ bakfilePath }}"
+      register: mount_output
+    - debug: var=mount_output
+
+    - name: create web site
+      win_iissite:
+         vrootdir: "{{ DestFolder }}\\vroot"
+         vdirname: "bbappfx_phoenix"
+         apppool: "bbappfx_phoenix"
+      register: iis_output
+    - debug: var=iis_output
+
+    - name: configure database
+      win_sqltasks:
+         baseInstallDir: "{{ DestFolder }}"
+         SQLInstance: "{{ sqlhost }}"
+      register: sql_output
+    - debug: var=sql_output

@@ -1,0 +1,24 @@
+---
+- hosts: sc1platsql2k8.pdnt.blackbaud.com
+  vars:
+      patchfile: "SQLServer2008R2SP3-KB2979597-x64-ENU.exe"
+
+  tasks:
+    - name: Copy sql2008 SP3 patch to local
+      win_copyfiles:
+          srcFolder: "\\\\ptlserver9\\3rdPartySoftware\\MS SQL Server 2008\\SQL Server 2008 R2 SP3\\{{ patchfile }}"
+          destFolder: "c:\\sqlpatch"
+      register: copyoutput
+    - debug: var=copyoutput
+
+    - name: Run SQL Server 2008 SP3 Patch
+      raw: "c:\\sqlpatch\\{{ patchfile }} /q /IAcceptSQLServerLicenseTerms /Action=Patch /InstanceName=SQL2008"
+      ignore_errors: True
+      register: sqlpatch
+    - debug: var=sqlpatch
+      notify:
+          - Machine reboot
+
+  handlers:
+    - name: Machine reboot
+      raw: shutdown -r -t 5

@@ -1,0 +1,30 @@
+---
+- hosts: entlabctlrs
+
+  tasks:
+    - name: Copy KWE msi to local
+      win_copyfiles:
+          srcFolder: "\\\\ptlserver9.pdnt.blackbaud.com\\Automation\\builds\\KeywordEngine.VS2013\\KeywordEngine.VS2013_2.0.55\\KeywordTestTypeInstaller.msi"
+          destFolder: "c:\\keywordengine"
+      register: copyoutput
+    - debug: var=copyoutput
+
+    - name: Stop VS Test controller service
+      win_service:
+          name: VSTTController
+          state: stopped
+      register: netstop
+    - debug: var=netstop
+
+    - name: Install new version of KWE
+      win_msi:
+          path: "c:\\keywordengine\\KeywordTestTypeInstaller.msi"
+      register: msiout
+    - debug: var=msiout
+
+    - name: start VS Test controller service
+      win_service:
+          name: VSTTController
+          state: started
+      register: netstart
+    - debug: var=netstart

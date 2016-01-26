@@ -1,0 +1,15 @@
+# Install security updates
+
+- hosts: windows
+
+  tasks:
+    - name: install security updates
+      win_checksecurity:
+      notify:
+          - MachineReboot
+      register: winupdate
+    - debug: var=winupdate
+
+  handlers:
+    - name: MachineReboot
+      raw: shutdown -r -t 1

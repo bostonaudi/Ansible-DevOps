@@ -1,0 +1,12 @@
+---
+- hosts: sc1entdemo.pdnt.blackbaud.com
+
+  tasks:
+    - name: Modify registry to set up TLS 1.1 and TLS 1.2
+      script: ../scripts/SetTLS.ps1
+      notify:
+          - Machine reboot
+
+  handlers:
+    - name: Machine reboot
+      raw: shutdown -r -t 2

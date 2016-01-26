@@ -1,0 +1,12 @@
+---
+- hosts: sc1entdemo.pdnt.blackbaud.com
+  vars:
+    BuildPath: "{{ buildpath }}"
+    bakfilePath: "{{ bakpath }}"
+    sqlInstance: "sc1demosqlrpt"
+  tasks:
+  - name: SQL Install
+    script: ../scripts/deploybuildcrmdemovm.ps1 -buildDropLocation "{{ BuildPath }}" -SQLInstance "{{ sqlInstance }}"-databasePath "{{ bakfilePath }}" -databaseKey "CRM_Integration" -ReportInstance "{{ sqlInstance }}" -Product "bbec"
+    register: install_result
+    failed_when: "install_result.stderr != ''"
+  - debug: var=sql_result.stderr

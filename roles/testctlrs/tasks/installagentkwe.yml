@@ -1,0 +1,50 @@
+---
+- hosts: entlabagents
+
+  tasks:
+    - name: Copy KWE msi to local
+      win_copyfiles:
+          srcFolder: "\\\\ptlserver9.pdnt.blackbaud.com\\Automation\\builds\\KeywordEngine.VS2013\\KeywordEngine.VS2013_2.0.55\\KeywordTestTypeInstaller.msi"
+          destFolder: "c:\\keywordengine"
+      register: copyoutput
+    - debug: var=copyoutput
+
+    - name: Stop Lab agent service
+      win_service:
+          name: LabAgentService
+          state: stopped
+      register: netstop
+    - debug: var=netstop
+
+    - name: Stop Lab Network agent service
+      win_service:
+          name: LabNetworkAgentService
+          state: stopped
+      register: netstop
+    - debug: var=netstop
+
+    - name: Install new version of KWE
+      win_msi:
+          path: "c:\\keywordengine\\KeywordTestTypeInstaller.msi"
+      notify:
+          - MachineReboot
+      register: msiout
+    - debug: var=msiout
+
+    - name: Start Lab agent service
+      win_service:
+          name: LabAgentService
+          state: started
+      register: netstart
+    - debug: var=netstart
+
+    - name: Start Lab Network agent service
+      win_service:
+          name: LabNetworkAgentService
+          state: started
+      register: netstart
+    - debug: var=netstart
+
+  handlers:
+    - name: MachineReboot
+      raw: shutdown -r -t 5

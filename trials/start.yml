@@ -1,0 +1,10 @@
+---
+- name: test script 
+  hosts: jahblac-0r2r90h.pdnt.blackbaud.com
+  tasks:
+    - name: run script
+      raw: ipconfig
+      register: ipconfig
+    - debug: var=ipconfig
+
+

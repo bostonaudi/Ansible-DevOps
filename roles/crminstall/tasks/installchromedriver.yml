@@ -1,0 +1,8 @@
+---
+- hosts: sc1test2agt02.pdnt.blackbaud.com
+
+  tasks:
+    - name: Deploy Chrome Driver
+      script: ../scripts/deploychomedriver.ps1
+      register: install_result
+      failed_when: "install_result.stderr != ''"

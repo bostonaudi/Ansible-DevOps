@@ -1,0 +1,51 @@
+---
+- hosts: 127.0.0.1
+  gather_facts: false
+  connection: local
+  user: local
+  sudo: true
+  vars: 
+      VSphereServer: sc10pvcenters01.blackbaud.global
+      VSphereUser: <yourname@blackbaud.com>
+      VSpherePwd: <yourpassword>
+      AgtTemplate: AutomationTemplate-GUI2012
+      VMCluster: "Automation Lab" 
+      ResourcePool: "/Resources"
+      VMfolder: "Testboxes"
+  
+  tasks:
+    - name: provision new VM
+      vsphere_guest: 
+        vcenter_hostname: "{{ VSphereServer }}"
+        username: "{{ VSphereUser }}"
+        password: "{{ VSpherePwd }}"
+        guest: SC1NewVm01
+        state: powered_on
+        vm_hw_version: vmx-08
+        vm_extra_config:
+           vcpu.hotadd: yes
+           mem.hotadd:  yes
+           notes: This is a test VM
+           folder: "{{ VMfolder }}"
+        vm_disk:
+          disk1:
+            size_gb: 40
+            type: thin
+            datastore: SC1_VNX_LUN_43_TFS_AUTO_LAB
+        vm_nic:
+          nic1:
+            type: e1000e
+            network: Server_VLAN_122 (LabSwitch)
+            network_type: standard
+        vm_hardware:
+          memory_mb: 4096
+          num_cpus: 4
+          osid: windows8Server64Guest
+          scsi: lsi_sas
+          vm_cdrom:
+            type: "iso"
+            iso_path: "ISO_TFS_AUTO_LAB/Lab ISOs/OS/en_windows_server_2012_r2_vl_x64_dvd_3319595.iso"
+        esxi:
+          datacenter: "Enterprise_Lab"
+          hostname: sc10pucss07.blackbaud.global
+
