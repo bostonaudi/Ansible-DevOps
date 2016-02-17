@@ -3,14 +3,14 @@ param
 (
     [Parameter(Mandatory=$true)][string]$buildDropLocation, 
     [Parameter(Mandatory=$true)][string]$SQLInstance,
+    [Parameter(Mandatory=$true)][string]$databaseName,
     [string]$databaseKey = "EnterpriseAutomation",
     [string]$ReportInstance = "",
     [string]$Product = "Phoenix",
     [string]$AGListener = ""
 )
 
-$version = ([xml](Get-Content "$pwd\Settings.xml")).Settings.LibraryVersion
-$libraryVersion = "\\ptlserver9\CrmPowershell\$version\CRMManifest.psd1"
+$libraryVersion = "\\ptlserver9\CrmPowershell\DEBUG\CRMManifest.psd1"
 Write-Host "Loading CRM Library from $libraryVersion"
 Import-Module $libraryVersion
 
@@ -49,9 +49,7 @@ if ($isPatchBuild) {
 
 # Set all parameters for the installation
 $vDir = "bbappfx_$Product"
-$baseInstallDir = "c:\Infinity\$Product"
-
-$databaseName = $env:COMPUTERNAME
+$baseInstallDir = "d:\sites\$Product"
 
 $addressValSrv = "SC1AddValSrv.pdnt.blackbaud.com"
 
@@ -92,8 +90,3 @@ if (test-path $brandingFile) {
 } else {
     Write-Host "No branding file found, skipping copy."
 }
-
-# -- Create a snapshot of the Database --
-Write-Host "Creating/Overwriting Snapshot of $databaseName"
-$snapName = $databaseName + "_Automation"
-Add-CRMDatabaseSnapshot -database $databaseName -snapshotname $snapName -SQLInstance $SQLInstance -overwrite 
