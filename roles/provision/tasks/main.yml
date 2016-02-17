@@ -1,0 +1,12 @@
+---
+    - vsphere_guest:
+        vcenter_hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_user }}"
+        password: "{{ vcenter_pass }}"
+        guest: "{{ inventory_hostname }}"
+        from_template: yes
+        template_src: "{{ templatename }}"
+        cluster: "{{ vmcluster }}"
+        resource_pool: "{{ resourcepool }}"
+        vm_folder: "{{ vmfolder }}"
+        autologon: "{{ autologondata }}"

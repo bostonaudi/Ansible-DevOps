@@ -1,0 +1,19 @@
+---
+- hosts: all
+  gather_facts: False
+  connection: local
+
+  vars_prompt:
+    - name: "user"
+      prompt: "Enter vcenter username"
+      private: no
+    - name: "pass"
+      prompt: "Enter vcenter password"
+      private: yes
+
+  roles:
+      - { role: serverprep, vcenter_user: "{{ user }}", vcenter_pass: "{{ pass }}"}
+
+
+
+

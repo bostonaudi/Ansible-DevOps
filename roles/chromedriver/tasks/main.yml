@@ -1,0 +1,8 @@
+---
+- hosts: entlabagents
+
+  tasks:
+    - name: Deploy Chrome Driver
+      script: ../scripts/deploychomedriver.ps1
+      register: install_result
+      failed_when: "'Error' in install_result.stderr"

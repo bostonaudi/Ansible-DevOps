@@ -1,0 +1,5 @@
+[sql-vms]
+sc1t2tstdbs001a role='sql'
+sc1t2tstdbs001b role='sql'
+
+
