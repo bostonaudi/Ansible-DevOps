@@ -1,0 +1,7 @@
+[sql-vm]
+sc1t2tstdbs002[a:b] role='sql'
+
+[web-vm]
+sc1t2tstweb002[a:b] role='web'
+
+

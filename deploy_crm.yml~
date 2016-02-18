@@ -1,0 +1,5 @@
+---
+- hosts: cdevrig
+
+  roles:
+      - { role: crmsqldeploy, when: "role == 'sql'", BuildPath: "{{ buildpath }}", bakfilePath: "{{ bakpath }}", databaseName: 'dbname' }
