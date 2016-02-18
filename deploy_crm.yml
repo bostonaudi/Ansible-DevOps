@@ -1,6 +1,16 @@
 ---
 - hosts: all
   roles:
-      - { role: crmsqldeploy, when: role == 'sql', buildPath: "{{ buildpath }}", bakfilePath: "{{ bakpath }}", databaseName: 'dbname' }
-      - { role: crmwebdeploy, when: role == 'web', buildPath: "{{ buildpath }}", sqlinstance: "{{ sqlinstancename }}", databaseName: 'dbname' }
+      - role: sqlserver
+        when: role == 'sql'
+        buildPath: "{{ buildpath }}"
+        bakfilePath: "{{ bakpath }}"
+        databaseName: "{{ dbname }}"
+      - role: webserver
+        when: role == 'web'
+        buildPath: "{{ buildpath }}"
+        sqlinstance: "{{ sqlinstancename }}"
+        databaseName: "{{ dbname }}"
+
+
 

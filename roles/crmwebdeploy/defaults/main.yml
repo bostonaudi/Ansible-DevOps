@@ -1,6 +1,0 @@
----
-vcenter_hostname:    "sc10pvcsas01.blackbaud.global"
-server2012_core_iso: "ISO_TFS_AUTO_LAB/Lab ISOs/OS/Windows2012ISO_Core.iso"
-esx_hostname:        "sc10pucss07.blackbaud.global"
-datacenter:          "Enterprise Test Lab"
-notes:               "Created by Ansible"

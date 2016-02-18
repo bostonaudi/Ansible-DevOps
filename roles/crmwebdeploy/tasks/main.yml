@@ -1,7 +1,0 @@
----
- - name: Web Server Install
-   script: ../scripts/DeployCRMWebServer.ps1 -buildDropLocation "{{ buildPath }}" -SQLInstance "{{ sqlinstance }}" -databaseName "{{ databaseName }}" -databaseKey "BBInfinity"
-   register: web_result
-   failed_when: "'Error' in web_result.stderr"
-
-
