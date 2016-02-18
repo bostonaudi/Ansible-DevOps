@@ -1,6 +1,0 @@
-[web-vms]
-sc1t2tstweb001[a:b] role='web'
-
-[db-vms]
-sc1t2tstdbs001[a:b] role='sql'
-

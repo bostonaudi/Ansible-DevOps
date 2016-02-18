@@ -1,6 +1,0 @@
-[web-vms]
-sc1t2tstweb001[a:b] role='web' num_disks='2' disk1='20' disk2='40' datastore='SC1_VNX5600_TFSAUTO_03' network='SERVER_VLAN_122' memory='2048' cpucount='2' osid='windows8Server64Guest'
-
-[db-vms]
-sc1t2tstdbs001[a:b] role='sql' num_disks='4' disk1='20' disk2='10' disk3='10' disk4='10' datastore='SC1_VNX5600_TFSAUTO_03' network='SERVER_VLAN_122' memory='4096' cpucount='4' osid='windows8Server64Guest'
-

@@ -12,8 +12,17 @@
       private: yes
 
   roles:
-      - { role: provision, when: "role == 'web'", vcenter_user: "{{ user }}", vcenter_pass: "{{ pass }}", templatename: 'SDOIIS_Srv2012Core' }
-      - { role: provision, when: "role == 'sql'", vcenter_user: "{{ user }}", vcenter_pass: "{{ pass }}", templatename: 'SDOSQL_Srv2012Core' }
+      - role: provision-template
+        when: role == 'web'
+        vcenter_user: "{{ user }}"
+        vcenter_pass: "{{ pass }}"
+        templatename: 'SDOIIS_Srv2012Core'
+
+      - role: provision-template
+        when: role == 'sql'
+        vcenter_user: "{{ user }}"
+        vcenter_pass: "{{ pass }}"
+        templatename: 'SDOSQL_Srv2012Core'
 
 
 
