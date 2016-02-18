@@ -3,4 +3,4 @@
    script: ../scripts/DeployCrmDatabase.ps1 -buildDropLocation "{{ buildPath }}" -bakFilePath "{{ bakfilePath }}" -databaseName "{{ databaseName }}"
    register: sql_result
    failed_when: "'Error' in sql_result.stderr"
- - debug: var=sql_result.stderr
+

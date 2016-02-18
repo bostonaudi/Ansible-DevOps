@@ -1,15 +1,7 @@
 ---
-- name: shell execution
-  vmware_vm_shell:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_user }}"
-    password: "{{ vcenter_pass }}"
-    vm_id: "{{ inventory_hostname }}"
-    vm_id_type: vm_name
-    vm_username: automagic@PDNT
-    vm_password: Research6
-    vm_shell: "c:\\windows\\system32\\xcopy.exe"
-    vm_shell_cwd: "c:\\windows\\system32"
-    vm_shell_args: "\\\\ptlserver9.pdnt.blackbaud.com\\crmpowershell\\machineconfig\\*.ps1 c:\\"
-  register: shellout
-- debug: var=shellout
+ - name: Web Server Install
+   script: ../scripts/DeployCRMWebServer.ps1 -buildDropLocation "{{ buildPath }}" -SQLInstance "{{ sqlinstance }}" -databaseName "{{ databaseName }}" -databaseKey "BBInfinity"
+   register: web_result
+   failed_when: "'Error' in web_result.stderr"
+
+
