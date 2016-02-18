@@ -20,10 +20,10 @@ param
 $buildDropLocation = $buildDropLocation.replace("/", "\")
 $bakFilePath = $bakFilePath.replace("/", "\")
 
-scriptblock = {
+$scriptblock = {
 param
 (
-    [Parameter(Mandatory=$true)][string]$buildDropLocation, 
+    [Parameter(Mandatory=$true)][string]$buildDropLocation,
     [Parameter(Mandatory=$true)][string]$bakfilePath,
     [Parameter(Mandatory=$true)][string]$databaseName
 
@@ -137,6 +137,6 @@ $user = 'pdnt\automagic'
 $pass = ConvertTo-SecureString -String "Research6" -AsPlainText -Force
 $creds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($user, $pass)
 
-$session = New-PSSession -ComputerName $SQLInstance -Credential $creds -Authentication Credssp
+$session = New-PSSession -ComputerName $env:Computername -Credential $creds -Authentication Credssp
 
-Invoke-Command -Session $session -ScriptBlock $bigscriptblock -ArgumentList $buildDropLocation,$bakFilePath,$databaseName
+Invoke-Command -Session $session -ScriptBlock $scriptblock -ArgumentList $buildDropLocation,$bakFilePath,$databaseName
