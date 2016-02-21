@@ -86,7 +86,7 @@ param
     Install-CRMComponents -sourceDir $buildDropLocation -destDir $baseInstallDir
 
     $TargetDir = Join-Path $baseInstallDir "vroot"
-    Install-CRMIISWebSite -vRoottargetDir $TargetDir -virtualDir $vDir -appPool $vDir -logging $logging -site $websitename 
+    Install-CRMIISWebSite -vRoottargetDir $TargetDir -virtualDir $vDir -appPool $vDir -logging "Medium" -site $websitename 
 
     if ($isPatchBuild) {
         Write-Host "Installing Patch from $patchDropLocation"
