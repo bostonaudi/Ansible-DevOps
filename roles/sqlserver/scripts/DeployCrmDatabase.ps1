@@ -14,7 +14,8 @@ param
 (
     [Parameter(Mandatory=$true)][string]$buildDropLocation,
     [Parameter(Mandatory=$true)][string]$bakFilePath,
-    [Parameter(Mandatory=$true)][string]$databaseName
+    [Parameter(Mandatory=$true)][string]$databaseName,
+    [Parameter(Mandatory=$true)][string[]]$webservers
 )
 
 $buildDropLocation = $buildDropLocation.replace("/", "\")
@@ -73,7 +74,7 @@ param
 
     Write-Host "Starting database installation for db $databaseName"
 
-    # does the target db already exist? If so, revision it, it not, mount it
+    # does the target db already exist? If so, revision it, if not, mount it, prep it, do the usual stuff
     if ($databasepresent) {
     # just run revisions
         # back it up so can revert from revision failure
@@ -115,9 +116,11 @@ param
         Add-CRMBBPSAccount -databaseName $databaseName -SQLInstance $primaryInstanceName
 
         # Setup lab user on the SQL server
-        Write-Host "Adding system user to database $databaseName"
-        Add-CRMSystemUser -databaseName $databaseName -SQLInstance $primaryInstanceName -ComputerName $SQLInstance
-
+        foreach ($webserver in $webservers) {
+            Write-Host "Adding $webserver to database $databaseName"
+            Add-CRMSystemUser -databaseName $databaseName -SQLInstance $primaryInstanceName -ComputerName $webserver
+        }
+        
         # Setup lab user on the SQL server
         Write-Host "Adding Job User Role to $databaseName"
         Add-CRMJobUserRole -installDir $baseInstallDir -ComputerName $SQLInstance -DatabaseName $databaseName -SQLInstance $primaryInstanceName
