@@ -1,5 +1,5 @@
 ---
  - name: SQL database Install
-   script: ../scripts/DeployCrmDatabase.ps1 -buildDropLocation "{{ buildPath }}" -bakFilePath "{{ bakfilePath }}" -databaseName "{{ databaseName }}" -webservers "{{ webservers }}"
+   script: ../scripts/DeployCrmDatabase.ps1 -buildDropLocation "{{ buildPath }}" -bakFilePath "{{ bakfilePath }}" -databaseName "{{ dbname }}" -webservers "{{ webservers }}"
    register: sql_result
    failed_when: "'Error' in sql_result.stderr"

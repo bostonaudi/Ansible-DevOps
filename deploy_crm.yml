@@ -5,11 +5,7 @@
         when: role == 'sql'
         buildPath: "{{ buildpath }}"
         bakfilePath: "{{ bakpath }}"
-        databaseName: "{{ dbname }}"
 
       - role: webserver
         when: role == 'web'
         buildPath: "{{ buildpath }}"
-        databaseName: "{{ dbname }}"
-        primarysqlinstance: "{{ sqlinstancename }}"
-        websitename: "{{ iiswebsite }}"
