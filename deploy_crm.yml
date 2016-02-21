@@ -10,8 +10,6 @@
       - role: webserver
         when: role == 'web'
         buildPath: "{{ buildpath }}"
-        sqlinstance: "{{ sqlinstancename }}"
         databaseName: "{{ dbname }}"
-
-
-
+        primarysqlinstance: "{{ sqlinstancename }}"
+        websitename: "{{ iiswebsite }}"

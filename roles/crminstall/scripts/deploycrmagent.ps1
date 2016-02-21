@@ -1,7 +1,7 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param
 (
-    [Parameter(Mandatory=$true)][string]$buildDropLocation, 
+    [Parameter(Mandatory=$true)][string]$buildDropLocation,
     [Parameter(Mandatory=$true)][string]$SQLInstance,
     [string]$databaseKey = "EnterpriseAutomation",
     [string]$ReportInstance = "",
@@ -9,8 +9,7 @@ param
     [string]$AGListener = ""
 )
 
-$version = ([xml](Get-Content "$pwd\Settings.xml")).Settings.LibraryVersion
-$libraryVersion = "\\ptlserver9\CrmPowershell\$version\CRMManifest.psd1"
+$libraryVersion = "\\ptlserver9\CrmPowershell\DEBUG\CRMManifest.psd1"
 Write-Host "Loading CRM Library from $libraryVersion"
 Import-Module $libraryVersion
 
@@ -42,7 +41,7 @@ $isPatchBuild = $buildDropLocation.Contains("Patches")
 if ($isPatchBuild) {
     $patchDropLocation = $buildDropLocation
     $buildDropLocation = $patchDropLocation.Substring(0, $patchDropLocation.IndexOf("Patches") - 1)
-    
+
     Write-Host "Installing build from $buildDropLocation"
     Write-Host "Installing patch from $patchDropLocation"
 }
@@ -61,7 +60,7 @@ $webServiceUrl = "http://localhost/$vDir/AppFxWebService.asmx"
 $brandingFile = "$PSScriptRoot\brandoptions.xml"
 $brandFileDropLocation = "$baseInstallDir\vroot\browser\brand\current"
 
-# -- Install the application -- 
+# -- Install the application --
 Write-Host "Installing Build from $buildDropLocation to $baseInstallDir"
 Install-CRMBuild -prodName $vDir -sourceDir $buildDropLocation -baseInstallDir $baseInstallDir
 
@@ -71,7 +70,7 @@ if ($isPatchBuild) {
 }
 
 Write-Host "Changing web.config, regenerating the encryption key."
-Set-CRMDatabaseEntry -installDir $baseInstallDir -DatabaseName $databaseName -SQLInstance $SQLInstance -databaseKey $databaseKey 
+Set-CRMDatabaseEntry -installDir $baseInstallDir -DatabaseName $databaseName -SQLInstance $SQLInstance -databaseKey $databaseKey
 
 # -- Setup Address Validation --
 Write-Host "Setting up Address Validation Services to point at $addressValSrv"
@@ -96,4 +95,4 @@ if (test-path $brandingFile) {
 # -- Create a snapshot of the Database --
 Write-Host "Creating/Overwriting Snapshot of $databaseName"
 $snapName = $databaseName + "_Automation"
-Add-CRMDatabaseSnapshot -database $databaseName -snapshotname $snapName -SQLInstance $SQLInstance -overwrite 
+Add-CRMDatabaseSnapshot -database $databaseName -snapshotname $snapName -SQLInstance $SQLInstance -overwrite

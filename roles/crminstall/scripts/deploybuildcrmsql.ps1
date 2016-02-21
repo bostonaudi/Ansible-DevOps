@@ -1,4 +1,4 @@
-﻿<# SQL Server Prep and Revisions process
+<# SQL Server Prep and Revisions process
 This script:
     1. copies the build to the server
     2. Copies the test database to the server
@@ -7,13 +7,13 @@ This script:
     5. Restore the database into n copies (n = number of agent names provided)
 
 Usage:
-    This script should be run in the build definition for the SQL Server Role, that role will need to be assigned in the MTM test rig 
+    This script should be run in the build definition for the SQL Server Role, that role will need to be assigned in the MTM test rig
 #>
 
 [CmdletBinding()]
 param
 (
-    [Parameter(Mandatory=$true)][string]$buildDropLocation, 
+    [Parameter(Mandatory=$true)][string]$buildDropLocation,
     [Parameter(Mandatory=$true)][string[]]$agents,
     [Parameter(Mandatory=$true)][string]$databasePath
 )
@@ -24,8 +24,7 @@ param
 #$databasePath = "$buildDropLocation\Database\BBInfinity.bak"
 
 # END DEBUGGING
-$version = ([xml](Get-Content "$pwd\Settings.xml")).Settings.LibraryVersion
-$libraryVersion = "\\ptlserver9\CrmPowershell\$version\CRMManifest.psd1"
+$libraryVersion = "\\ptlserver9\CrmPowershell\DEBUG\CRMManifest.psd1"
 Write-Host "Loading CRM Library from $libraryVersion"
 Import-Module $libraryVersion
 
@@ -46,7 +45,7 @@ $isPatchBuild = $buildDropLocation.Contains("Patches")
 if ($isPatchBuild) {
     $patchDropLocation = $buildDropLocation
     $buildDropLocation = $patchDropLocation.Substring(0, $patchDropLocation.IndexOf("Patches") - 1)
-    
+
     Write-Host "Installing build from $buildDropLocation"
     Write-Host "Installing patch from $patchDropLocation"
 }
@@ -63,7 +62,7 @@ if (!(Test-Path -Path $baseInstallDir)) {
     New-Item -Path $baseInstallDir -ItemType Directory | Out-Null
 }
 
-# Move database backup 
+# Move database backup
 $localDbBackup = "$baseInstallDir\local.bak"
 Write-Host "Copying database backup from $databasePath to $localDbBackup"
 Copy-Item -Path $databasePath -Destination $localDbBackup -Force
@@ -72,7 +71,7 @@ Copy-Item -Path $databasePath -Destination $localDbBackup -Force
 Write-Host "Loading database $databaseName from backup $localDbBackup"
 Restore-CRMDatabase -databaseName $databaseName -SQLInstance $SQLInstance -databasePath $localDbBackup -ReplaceDatabase
 
-# -- Install the application -- 
+# -- Install the application --
 Write-Host "Installing Build from $buildDropLocation to $baseInstallDir"
 Install-CRMComponents -sourceDir $buildDropLocation -destDir $baseInstallDir
 
@@ -84,8 +83,8 @@ if ($isPatchBuild) {
 Write-Host "Updating encryption keys"
 Set-CRMEncryptionKey -installDir $baseInstallDir -DatabaseName $databaseName -SQLInstance $SQLInstance
 
-Write-Host "Running revisions" 
-Update-CRMRevisions -installDir $baseInstallDir -DatabaseName $databaseName -SQLInstance $SQLInstance 
+Write-Host "Running revisions"
+Update-CRMRevisions -installDir $baseInstallDir -DatabaseName $databaseName -SQLInstance $SQLInstance
 
 # -- Setup BBPS --
 Write-Host "Adding BBPS account to $databaseName on $SQLInstance"
@@ -98,7 +97,7 @@ foreach ($db in $databases) {
     $db = $db.Split(".")[0]
     Write-Host "Restoring: $db"
     Restore-CRMDatabase -databaseName $db -SQLInstance $SQLInstance -databasePath $tmpBakFile -ComputerName $db -ReplaceDatabase
-    Set-CRMEncryptionKey -installDir $baseInstallDir -DatabaseName $db -SQLInstance $SQLInstance 
+    Set-CRMEncryptionKey -installDir $baseInstallDir -DatabaseName $db -SQLInstance $SQLInstance
 
     # Setup lab user on the SQL server
     Write-Host "Adding system user to database $db"
@@ -109,7 +108,7 @@ foreach ($db in $databases) {
     Add-CRMJobUserRole -installDir $baseInstallDir -ComputerName $db -DatabaseName $db -SQLInstance $SQLInstance
 
     Write-Host "Adding Job User to $db"
-    Add-CRMJobUser -installDir $baseInstallDir -DatabaseName $db -SQLInstance $SQLInstance 
+    Add-CRMJobUser -installDir $baseInstallDir -DatabaseName $db -SQLInstance $SQLInstance
 
     Write-Host "Adding Proxy rights to system user"
     Add-CRMJobUserProxyRights -installDir $baseInstallDir -ComputerName $db -DatabaseName $db -SQLInstance $SQLInstance

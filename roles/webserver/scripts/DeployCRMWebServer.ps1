@@ -4,18 +4,20 @@ param
     [Parameter(Mandatory=$true)][string]$buildDropLocation,
     [Parameter(Mandatory=$true)][string]$SQLInstance,
     [Parameter(Mandatory=$true)][string]$databaseName,
-    [string]$databaseKey = "EnterpriseAutomation",
+    [Parameter(Mandatory=$true)][string]$websitename,
+    [string]$databaseKey = "BBInfinity",
     [string]$ReportInstance = "",
-    [string]$Product = "Phoenix",
+    [string]$Product = "BBCRM",
     [string]$AGListener = ""
 )
 
 $scriptblock = {
 param
 (
-    [Parameter(Mandatory=$true)][string]$buildDropLocation,
-    [Parameter(Mandatory=$true)][string]$SQLInstance,
-    [Parameter(Mandatory=$true)][string]$databaseName,
+    [string]$buildDropLocation,
+    [string]$SQLInstance,
+    [string]$databaseName,
+    [string]$websitename,
     [string]$databaseKey,
     [string]$ReportInstance,
     [string]$Product,
@@ -73,7 +75,18 @@ param
 
     # -- Install the application --
     Write-Host "Installing Build from $buildDropLocation to $baseInstallDir"
-    Install-CRMBuild -prodName $vDir -sourceDir $buildDropLocation -baseInstallDir $baseInstallDir
+    #Install-CRMBuild -prodName $vDir -sourceDir $buildDropLocation -baseInstallDir $baseInstallDir
+
+    if (!(Test-Path -Path $baseInstallDir)) {
+        Write-Host "Creating folder $baseInstallDir"
+        [void](New-Item -ItemType directory -Path $baseInstallDir)
+    }
+
+       # Run the install
+    Install-CRMComponents -sourceDir $buildDropLocation -destDir $baseInstallDir
+
+    $TargetDir = Join-Path $baseInstallDir "vroot"
+    Install-CRMIISWebSite -vRoottargetDir $TargetDir -virtualDir $vDir -appPool $vDir -logging $logging -site $websitename 
 
     if ($isPatchBuild) {
         Write-Host "Installing Patch from $patchDropLocation"
@@ -111,4 +124,5 @@ $creds = New-Object -TypeName System.Management.Automation.PSCredential -Argumen
 
 $session = New-PSSession -ComputerName $env:Computername -Credential $creds -Authentication Credssp
 
-Invoke-Command -Session $session -ScriptBlock $scriptblock -ArgumentList $buildDropLocation,$SQLInstance,$databaseName,$databaseKey,$ReportInstance,$Product,$AGListener
+Invoke-Command -Session $session -ScriptBlock $scriptblock -ArgumentList $buildDropLocation,$SQLInstance,$databaseName,$websitename,$databaseKey,$ReportInstance,$Product,$AGListener
+    
