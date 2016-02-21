@@ -1,6 +1,6 @@
 ---
  - name: Web Server Install
-   script: ../scripts/DeployCRMWebServer.ps1 -buildDropLocation "{{ buildPath }}" -SQLInstance "{{ primarysqlinstance }}" -databaseName "{{ databaseName }}" -websitename "{{ iiswebsite }}" -databaseKey "BBInfinity"
+   script: ../scripts/DeployCRMWebServer.ps1 -buildDropLocation "{{ buildPath }}" -SQLInstance "{{ primarysqlinstance }}" -databaseName "{{ databaseName }}" -websitename "{{ websitename }}" -databaseKey "BBInfinity"
    register: web_result
    failed_when: "'Error' in web_result.stderr"
 
