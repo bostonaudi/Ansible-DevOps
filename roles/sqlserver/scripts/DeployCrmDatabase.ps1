@@ -15,7 +15,7 @@ param
     [Parameter(Mandatory=$true)][string]$buildDropLocation,
     [Parameter(Mandatory=$true)][string]$bakFilePath,
     [Parameter(Mandatory=$true)][string]$databaseName,
-    [Parameter(Mandatory=$true)][string[]]$webservers
+    [Parameter(Mandatory=$true)][string]$webservers
 )
 
 $buildDropLocation = $buildDropLocation.replace("/", "\")
@@ -26,7 +26,8 @@ param
 (
     [Parameter(Mandatory=$true)][string]$buildDropLocation,
     [Parameter(Mandatory=$true)][string]$bakfilePath,
-    [Parameter(Mandatory=$true)][string]$databaseName
+    [Parameter(Mandatory=$true)][string]$databaseName,
+    [Parameter(Mandatory=$true)][string]$webservers
 
 )
     Import-Module "\\ptlserver9\CrmPowershell\DEBUG\CRMManifest.psd1"
@@ -116,8 +117,8 @@ param
         Add-CRMBBPSAccount -databaseName $databaseName -SQLInstance $primaryInstanceName
 
         # Setup lab user on the SQL server
-        foreach ($webserver in $webservers) {
-            Write-Host "Adding $webserver to database $databaseName"
+        foreach ($webserver in $webservers.split(',')) {
+            Write-Host "Adding $webserver to database $databaseName roles"
             Add-CRMSystemUser -databaseName $databaseName -SQLInstance $primaryInstanceName -ComputerName $webserver
         }
         
@@ -142,4 +143,4 @@ $creds = New-Object -TypeName System.Management.Automation.PSCredential -Argumen
 
 $session = New-PSSession -ComputerName $env:Computername -Credential $creds -Authentication Credssp
 
-Invoke-Command -Session $session -ScriptBlock $scriptblock -ArgumentList $buildDropLocation,$bakFilePath,$databaseName
+Invoke-Command -Session $session -ScriptBlock $scriptblock -ArgumentList $buildDropLocation,$bakFilePath,$databaseName,$webservers
