@@ -1,7 +1,0 @@
-[sql-vm]
-sc1t2tstdbs003a role='sql'
-
-[web-vm]
-sc1t2tstweb003a role='web'
-
-

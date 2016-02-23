@@ -1,5 +1,5 @@
 ---
-- hosts: bulkimportrig
+- hosts: all
 
   vars_prompt:
     - name: "username"
