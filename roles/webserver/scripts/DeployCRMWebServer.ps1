@@ -11,6 +11,8 @@ param
     [string]$AGListener = ""
 )
 
+$buildDropLocation = $buildDropLocation.replace("/", "\")
+
 $scriptblock = {
 param
 (
@@ -86,7 +88,7 @@ param
     Install-CRMComponents -sourceDir $buildDropLocation -destDir $baseInstallDir
 
     $TargetDir = Join-Path $baseInstallDir "vroot"
-    Install-CRMIISWebSite -vRoottargetDir $TargetDir -virtualDir $vDir -appPool $vDir -logging "Medium" -site $websitename 
+    Install-CRMIISWebSite -vRoottargetDir $TargetDir -virtualDir $vDir -appPool $vDir -logging "Medium" -site $websitename
 
     if ($isPatchBuild) {
         Write-Host "Installing Patch from $patchDropLocation"
@@ -120,9 +122,8 @@ param
 
 $user = 'pdnt\automagic'
 $pass = ConvertTo-SecureString -String "Research6" -AsPlainText -Force
-$creds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($user, $pass)
+$creds = New-Object System.Management.Automation.PSCredential ($user, $pass)
 
 $session = New-PSSession -ComputerName $env:Computername -Credential $creds -Authentication Credssp
 
 Invoke-Command -Session $session -ScriptBlock $scriptblock -ArgumentList $buildDropLocation,$SQLInstance,$databaseName,$websitename,$databaseKey,$ReportInstance,$Product,$AGListener
-    

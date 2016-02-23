@@ -37,6 +37,10 @@ options:
     required: true
     default: null
     aliases: []
+  user:
+      required: true
+  password:
+      required: true
 author: John Hamill
 '''
 

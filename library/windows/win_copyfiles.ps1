@@ -25,46 +25,6 @@ $params = Parse-Args $args;
 #Set-Attr $params "destFolder" "c:\testfolder"
 #Set-Attr $params "filename" "BlackbaudInstaller.exe"
 
-
-Function Copy-SourceToTarget {
-    [cmdletbinding()]
-    Param
-    (
-        [string]$source,
-        [string]$target,
-        [string]$exclusions
-    )
-
-    [string]$tempLog = [System.IO.Path]::GetTempFileName()
-
-    if ([String]::IsNullOrEmpty($exclusions)) {
-        robocopy $source $target /S /MT /NFL /NDL /NJH /NJS /NC /NS /NP /log:$tempLog
-    }
-    else {
-        robocopy $source $target /S /MT /NFL /NDL /NJH /NJS /NC /NS /NP /XF $exclusions /log:$tempLog
-    }
-}
-
-Function Copy-CRMMirrorSourceAndTarget {
-    [cmdletbinding()]
-    Param
-    (
-        [string]$source,
-        [string]$target,
-        [string]$exclusions
-    )
-
-    [string]$tempLog = [System.IO.Path]::GetTempFileName()
-
-    if ([String]::IsNullOrEmpty($exclusions)) {
-        robocopy $source $target /MIR /MT /NFL /NDL /NJH /NJS /NC /NS /NP /log:$tempLog
-    }
-    else {
-        Write-Host "With exclusions"
-        robocopy $source $target /MIR /MT /NFL /NDL /NJH /NJS /NC /NS /NP /XF $exclusions /log:$tempLog
-    }
-}
-
 $result = New-Object PSObject;
 
 Set-Attr $result "changed" $false;
@@ -75,53 +35,82 @@ Set-Attr $result "srcFolder" $srcFolder
 $destFolder = Get-Attr -obj $params -name "destFolder" -default $FALSE -failifempty $true
 Set-Attr $result "destFolder" $destFolder
 
-$user = 'pdnt\automagic'
-$password = ConvertTo-SecureString -String "Research6" -AsPlainText -Force
-$credentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($user, $password)
+$user = Get-Attr -obj $params -name "user" -default "" -failifempty $true
+Set-Attr $result "user" $user
 
-if (test-path "P:") {
-    Remove-PSDrive -Name P
-}
+$password = Get-Attr -obj $params -name "password" -default "" -failifempty $true
+Set-Attr $result "password" $password
 
-if (!(test-path $destFolder)) {
-    New-Item $destFolder -type directory
-}
+$srcFolder = $srcFolder.replace("/", "\")
+$destFolder = $destFolder.replace("/", "\")
 
-# get the parent folder so we can map it
-$option = [System.StringSplitOptions]::RemoveEmptyEntries
-$rootmap = "\\" + [string]::join("\",$srcFolder.Split("\")[2..3])
-$count = $srcFolder.Split("\", $option).count + 1
-$remainder = [string]::join("\", $srcFolder.Split("\")[4..$count])
+$scriptblock = {
+    param
+    (
+        [string]$srcFolder,
+        [string]$destFolder
+    )
 
-New-PSDrive -Name P -PSProvider FileSystem -Root $rootmap -Credential $credentials -persist
+    Function Copy-SourceToTarget {
+        [cmdletbinding()]
+        Param
+        (
+            [string]$source,
+            [string]$target,
+            [string]$exclusions
+        )
 
-Start-Sleep -s 1
+        [string]$tempLog = [System.IO.Path]::GetTempFileName()
 
-if (!(test-path "P:")) {
-    Fail-Json $result "New-PSDrive failed!"
-}
+        if ([String]::IsNullOrEmpty($exclusions)) {
+            robocopy $source $target /S /MT /NFL /NDL /NJH /NJS /NC /NS /NP /log:$tempLog
+        }
+        else {
+            robocopy $source $target /S /MT /NFL /NDL /NJH /NJS /NC /NS /NP /XF $exclusions /log:$tempLog
+        }
+    }
 
-$mappedPath = [io.path]::combine("P:\", $remainder)
-Set-Attr $result "fullSrc" $mappedPath
+    Function Copy-CRMMirrorSourceAndTarget {
+        [cmdletbinding()]
+        Param
+        (
+            [string]$source,
+            [string]$target,
+            [string]$exclusions
+        )
 
-if (!(test-path $mappedPath)) {
-    Fail-Json $result "$mappedPath does not exist!"
-}
+        [string]$tempLog = [System.IO.Path]::GetTempFileName()
 
-if ((Get-Item $mappedPath) -is [System.IO.DirectoryInfo]) {
-    [boolean]$upgrade = [System.IO.Directory]::Exists($destFolder)
-    if ($upgrade) {
-        Copy-CRMMirrorSourceAndTarget -source $mappedPath -target $destFolder -exclusions $null
-    } else {
-        Copy-SourceToTarget -source $mappedPath -target $destFolder -exclusions $null
+        if ([String]::IsNullOrEmpty($exclusions)) {
+            robocopy $source $target /MIR /MT /NFL /NDL /NJH /NJS /NC /NS /NP /log:$tempLog
+        }
+        else {
+            Write-Host "With exclusions"
+            robocopy $source $target /MIR /MT /NFL /NDL /NJH /NJS /NC /NS /NP /XF $exclusions /log:$tempLog
+        }
+    }
+
+    if ((Get-Item $srcFolder) -is [System.IO.DirectoryInfo]) {
+        [boolean]$upgrade = [System.IO.Directory]::Exists($destFolder)
+        if ($upgrade) {
+            Copy-CRMMirrorSourceAndTarget -source $srcFolder -target $destFolder -exclusions $null
+        } else {
+            Copy-SourceToTarget -source $srcFolder -target $destFolder -exclusions $null
+        }
+    }
+    else {
+        Copy-Item "$srcFolder" -Destination $destFolder -Force
     }
 }
-else {
-    Copy-Item "$mappedPath" -Destination $destFolder -Force
-}
 
-Remove-PSDrive -Name P
+$secpasswd = ConvertTo-SecureString $password -AsPlainText -Force
+$creds = New-Object System.Management.Automation.PSCredential ($user, $secpasswd)
+
+$session = New-PSSession -ComputerName $env:Computername -Credential $creds -Authentication Credssp
+
+Invoke-Command -Session $session -scriptblock $scriptblock -ArgumentList $srcFolder,$destFolder
 
 Set-Attr $result "changed" $true;
 Exit-Json $result;
+
 

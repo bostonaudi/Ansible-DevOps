@@ -121,7 +121,7 @@ param
             Write-Host "Adding $webserver to database $databaseName roles"
             Add-CRMSystemUser -databaseName $databaseName -SQLInstance $primaryInstanceName -ComputerName $webserver
         }
-        
+
         # Setup lab user on the SQL server
         Write-Host "Adding Job User Role to $databaseName"
         Add-CRMJobUserRole -installDir $baseInstallDir -ComputerName $SQLInstance -DatabaseName $databaseName -SQLInstance $primaryInstanceName
@@ -139,7 +139,7 @@ param
 
 $user = 'pdnt\automagic'
 $pass = ConvertTo-SecureString -String "Research6" -AsPlainText -Force
-$creds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($user, $pass)
+$creds = New-Object System.Management.Automation.PSCredential ($user, $pass)
 
 $session = New-PSSession -ComputerName $env:Computername -Credential $creds -Authentication Credssp
 
