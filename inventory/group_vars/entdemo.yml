@@ -1,0 +1,7 @@
+---
+dbname: 'crmdemo'
+sqlinstance: 'sc1demosqlrpt'
+iiswebsite: 'Default Web Site'
+sqlinstancename: 'sc1demosqlrpt'
+webservers: 'sc1entdemo'
+

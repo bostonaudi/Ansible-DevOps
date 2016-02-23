@@ -1,0 +1,8 @@
+---
+- hosts: bulkimportrig
+  gather_facts: False
+
+  roles:
+      - role: sdovmprep
+        when: role == 'web'
+        buildPath: "{{ buildpath }}"

@@ -1,0 +1,5 @@
+---
+dbname: 'CDevDemo1'
+iiswebsite: 'CRM Web Site'
+sqlinstancename: 'sc1t2tstdbs001a\\sc1t2tstsql001a,51111'
+webservers: 'sc1t2tstweb001a'

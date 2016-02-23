@@ -1,0 +1,8 @@
+---
+# tasks file for sdovmprep
+ - name: Web Server prep
+   script: ../scripts/webserverprep.ps1 -hostname "{{ inventory_hostname }}" -configpath "{{ configpath }}" -websitename  "{{ websitename }}"
+   register: web_prep_result
+   failed_when: "'Error' in web_prep_result.stderr"
+
+

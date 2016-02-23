@@ -1,0 +1,5 @@
+---
+# defaults file for sdovmprep
+
+configpath: "//ptlserver9/crmpowershell/sdo/powershell/data/sdoserversetup.xml"
+websitename: "CRM Web site"

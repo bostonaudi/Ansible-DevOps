@@ -1,0 +1,17 @@
+---
+- hosts: bulkimportrig
+
+  vars_prompt:
+    - name: "username"
+      prompt: "Enter domain username"
+      private: no
+    - name: "pass"
+      prompt: "Enter password"
+      private: yes
+
+  roles:
+      - role: deploypowershell
+        source: "//ptlserver9/crmpowershell/debug"
+        dest: "c:/buildscripts"
+        domainuser: "pdnt\\automagic"
+        pwd: "Research6"

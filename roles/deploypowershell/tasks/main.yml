@@ -1,0 +1,11 @@
+---
+# tasks file for deploypowershell
+
+- win_copyfiles:
+    srcFolder: "{{ source }}"
+    destFolder: "{{ dest }}"
+    user: "{{ domainuser }}"
+    password: "{{ pwd }}"
+
+
+#- script: ../scripts/win_copyfiles.ps1 -srcFolder "{{ source }}" -destFolder "{{ dest }}" -user "{{ domainuser }}" -password "{{ pwd }}"

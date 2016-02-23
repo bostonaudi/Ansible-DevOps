@@ -1,0 +1,28 @@
+---
+- hosts: all
+  connection: local
+  gather_facts: False
+
+  vars_prompt:
+    - name: "user"
+      prompt: "Enter vcenter username"
+      private: no
+    - name: "pass"
+      prompt: "Enter vcenter password"
+      private: yes
+
+  roles:
+      - role: provision-template
+        when: role == 'web'
+        vcenter_user: "{{ user }}"
+        vcenter_pass: "{{ pass }}"
+        templatename: 'SDOIIS_Srv2012Core'
+
+      - role: provision-template
+        when: role == 'sql'
+        vcenter_user: "{{ user }}"
+        vcenter_pass: "{{ pass }}"
+        templatename: 'SDOSQL_Srv2012Core'
+
+
+

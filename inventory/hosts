@@ -1,0 +1,148 @@
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+[all:vars]
+ansible_ssh_user=administrator
+ansible_ssh_pass=PTL@dm1n
+ansible_ssh_port=5986
+ansible_connection=winrm
+
+[bulkimportrig]
+sc1t2tstdbs003a.pdnt.blackbaud.com role='sql'
+sc1t2tstweb003a.pdnt.blackbaud.com role='web'
+
+[entdemo]
+sc1demosqlrpt.pdnt.blackbaud.com role='sql'
+sc1entdemo.pdnt.blackbaud.com role='web'
+
+[testsql]
+sc1anssqlsrv.pdnt.blackbaud.com role='sql'
+
+[cdevrig]
+sc1t2tstweb001a.pdnt.blackbaud.com role='web'
+sc1t2tstdbs001a.pdnt.blackbaud.com role='sql'
+sc1t2tstdbs001b.pdnt.blackbaud.com role='sql'
+
+[testrig2]
+sc1test2agt01.pdnt.blackbaud.com
+sc1test2agt02.pdnt.blackbaud.com
+
+[testtestctlrs]
+SC1TestCtrl.pdnt.blackbaud.com
+
+[EnterpriseSQLServers]
+SC1BBISSQLSRV.pdnt.blackbaud.com
+SC1Ent1SQLSRV.pdnt.blackbaud.com
+SC1Ent2SQLSRV.pdnt.blackbaud.com
+SC1Ent3SQLSRV.pdnt.blackbaud.com
+SC1Ent4SQLSRV.pdnt.blackbaud.com
+SC1Ent5SQLSRV.pdnt.blackbaud.com
+SC1PlatSQLSRV.pdnt.blackbaud.com
+
+[EnterpriseReportServers]
+SC1BBISRPTSRV.pdnt.blackbaud.com
+SC1Ent1RPTSRV.pdnt.blackbaud.com
+SC1Ent2RPTSRV.pdnt.blackbaud.com
+SC1Ent3RPTSRV.pdnt.blackbaud.com
+SC1Ent4RPTSRV.pdnt.blackbaud.com
+SC1Ent5RPTSRV.pdnt.blackbaud.com
+SC1PlatRPTSRV.pdnt.blackbaud.com
+
+[testctlrs]
+SC1AltruCtlr.pdnt.blackbaud.com
+SC1BBISCtlr.pdnt.blackbaud.com
+SC1Ent1Ctlr.pdnt.blackbaud.com
+SC1Ent2Ctlr.pdnt.blackbaud.com
+SC1Ent3Ctlr.pdnt.blackbaud.com
+SC1Ent4Ctlr.pdnt.blackbaud.com
+SC1Ent5Ctlr.pdnt.blackbaud.com
+SC1MnyCtlr.pdnt.blackbaud.com
+SC1PlatCtlr.pdnt.blackbaud.com
+
+[entlabctlrs]
+SC1Ent1Ctlr.pdnt.blackbaud.com
+SC1Ent2Ctlr.pdnt.blackbaud.com
+SC1Ent3Ctlr.pdnt.blackbaud.com
+SC1Ent4Ctlr.pdnt.blackbaud.com
+SC1Ent5Ctlr.pdnt.blackbaud.com
+
+[entlabagents:children]
+entrig1agents
+entrig2agents
+entrig3agents
+entrig4agents
+entrig5agents
+entrig6agents
+entrigbbisagents
+
+[keywordbuildagents]
+sc1autobuild02.pdnt.blackbaud.com
+
+[entrig1agents]
+SC1Ent1Agt01.pdnt.blackbaud.com
+SC1Ent1Agt02.pdnt.blackbaud.com
+SC1Ent1Agt03.pdnt.blackbaud.com
+SC1Ent1Agt04.pdnt.blackbaud.com
+
+[entrig2agents]
+SC1Ent2Agt01.pdnt.blackbaud.com
+SC1Ent2Agt02.pdnt.blackbaud.com
+SC1Ent2Agt03.pdnt.blackbaud.com
+SC1Ent2Agt04.pdnt.blackbaud.com
+
+[entrig3agents]
+SC1Ent3Agt01.pdnt.blackbaud.com
+SC1Ent3Agt02.pdnt.blackbaud.com
+SC1Ent3Agt03.pdnt.blackbaud.com
+SC1Ent3Agt04.pdnt.blackbaud.com
+SC1Ent3Agt05.pdnt.blackbaud.com
+SC1Ent3Agt06.pdnt.blackbaud.com
+
+[entrig4agents]
+SC1Ent4Agt01.pdnt.blackbaud.com
+SC1Ent4Agt02.pdnt.blackbaud.com
+SC1Ent4Agt03.pdnt.blackbaud.com
+SC1Ent4Agt04.pdnt.blackbaud.com
+
+[entrig5agents]
+SC1Ent5Agt01.pdnt.blackbaud.com
+SC1Ent5Agt02.pdnt.blackbaud.com
+SC1Ent5Agt03.pdnt.blackbaud.com
+SC1Ent5Agt04.pdnt.blackbaud.com
+
+[entrig6agents]
+SC1Ent6Agt01.pdnt.blackbaud.com
+SC1Ent6Agt02.pdnt.blackbaud.com
+SC1Ent6Agt03.pdnt.blackbaud.com
+SC1Ent6Agt04.pdnt.blackbaud.com
+
+[entrigbbisagents]
+SC1BBISAgt01.pdnt.blackbaud.com
+SC1BBISAgt02.pdnt.blackbaud.com
+SC1BBISAgt03.pdnt.blackbaud.com
+SC1BBISAgt04.pdnt.blackbaud.com
+
+[platformrigagents]
+SC1PlatAgt01.pdnt.blackbaud.com
+SC1PlatAgt02.pdnt.blackbaud.com
+SC1PlatAgt03.pdnt.blackbaud.com
+SC1PlatAgt04.pdnt.blackbaud.com
+
+[unittestagents]
+bldtstagt01.pdnt.blackbaud.com
+bldtstagt02.pdnt.blackbaud.com
+bldtstagt03.pdnt.blackbaud.com
+bldtstagt04.pdnt.blackbaud.com
+bldtstagt05.pdnt.blackbaud.com
+bldtstagt06.pdnt.blackbaud.com
+bldtstagt07.pdnt.blackbaud.com
+bldtstagt08.pdnt.blackbaud.com
+bldtstagt09.pdnt.blackbaud.com
+bldtstagt10.pdnt.blackbaud.com
+

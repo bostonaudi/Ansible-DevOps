@@ -1,0 +1,11 @@
+[entdemo]
+sc1demosqlrpt.pdnt.blackbaud.com role='sql'
+sc1entdemo.pdnt.blackbaud.com role='web'
+
+[entdemo:vars]
+dbname='crmdemo'
+sqlinstance='sc1demosqlrpt'
+iiswebsite='Default Web Site'
+sqlinstancename='sc1demosqlrpt'
+webservers='sc1entdemo'
+

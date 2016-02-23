@@ -1,0 +1,11 @@
+---
+- hosts: all
+  roles:
+      - role: sqlserver
+        when: role == 'sql'
+        buildPath: "{{ buildpath }}"
+        bakfilePath: "{{ bakpath }}"
+
+      - role: webserver
+        when: role == 'web'
+        buildPath: "{{ buildpath }}"
